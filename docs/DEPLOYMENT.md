@@ -9,35 +9,52 @@
 
 ## Deployment Order
 
-### 1. Deploy MockUSDC (if required)
+### 1. Configure Environment
 ```bash
-forge create src/mocks/MockUSDC.sol:MockUSDC --rpc-url $RPC_URL --private-key $PK
+export RPC_URL=<https endpoint>
+export PRIVATE_KEY=<hex private key without 0x>
+export OM_ATOKEN=<aToken address>
+export OM_AAVE_POOL=<Aave pool address>
+# Optional overrides:
+export OM_ASSET=<existing ERC20, default deploys MockERC20>
+export OM_ADMIN=<protocol admin address, default signer>
+export OM_INITIAL_MINT=<uint amount minted to admin when deploying mock asset>
 ```
 
-### 2. Deploy FundingRouter
+### 2. Run Foundry Script
 ```bash
-forge create src/FundingRouter.sol:FundingRouter --rpc-url $RPC_URL --private-key $PK
+forge script script/DeployOctantMini.s.sol \
+  --rpc-url $RPC_URL \
+  --broadcast \
+  --verify # optional
 ```
-Record the router address.
+The script:
+1. Deploys a mock ERC20 (18 decimals) if `OM_ASSET` is unset.
+2. Deploys `FundingRouter`, `OctantMiniVault`, and `AaveYieldDonatingStrategy`.
+3. Wires the vault to the router/strategy automatically.
+4. Mints `OM_INITIAL_MINT` tokens to `OM_ADMIN` when using the mock asset (default 1M tokens).
 
-### 3. Deploy OctantMiniVault
+All addresses are printed to stdout for record keeping.
+
+### 3. Configure Router Programs
+Use `cast` or a multisig to add programs and set allocations:
 ```bash
-forge create src/OctantMiniVault.sol:OctantMiniVault   --constructor-args <USDC_ADDRESS> <ROUTER_ADDRESS>   --rpc-url $RPC_URL --private-key $PK
+cast send <ROUTER> "addProgram((address,uint16,string,bool))" \
+  "([<recipient>,<bps>,\"ipfs://...\",true])" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
 
-### 4. Deploy AaveYieldDonatingStrategy
-```bash
-forge create src/AaveYieldDonatingStrategy.sol:AaveYieldDonatingStrategy   --constructor-args <USDC_ADDRESS> <aUSDC_ADDRESS> <AAVE_POOL> <VAULT_ADDRESS>   --rpc-url $RPC_URL --private-key $PK
-```
+### 4. Deposits / Strategy Funding
+1. Approve the vault for the asset.
+2. Call `deposit`.
+3. Call `forwardToStrategy` from a strategist role, then `deployFunds` on the strategy keeper.
 
-### 5. Link Vault ↔ Strategy
-```bash
-cast send <VAULT_ADDRESS> "setStrategy(address)" <STRATEGY_ADDRESS> --rpc-url $RPC_URL --private-key $PK
-```
+### 5. Harvest & Route
+1. Keeper runs `harvestAndReport`.
+2. Router keeper calls `route()` to fan out yield.
 
 ### 6. Verify Contracts (optional)
 ```bash
-forge verify-contract ...
+forge verify-contract --rpc-url $RPC_URL --etherscan-api-key $ETHERSCAN_KEY <address> <contract>
 ```
 
 ### 7. Deploy Frontend
