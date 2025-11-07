@@ -1,0 +1,25 @@
+# Foundry
+out/
+cache/
+broadcast/
+lib/*
+!lib/.gitkeep
+
+# Node / frontend artifacts
+node_modules/
+frontend/node_modules/
+pnpm-lock.yaml
+package-lock.json
+
+# Env / credentials
+.env
+.env.*
+
+# Editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+
+MILESTONES.md
