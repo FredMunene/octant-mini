@@ -37,7 +37,7 @@
 - [x] Unit tests: strategy (deploy, free, harvest, report).
 - [x] Unit tests: router (allocations, routing math).
 - [x] Integration test: deposit → deployFunds → harvestAndReport → route().
-- [ ] (Optional) Fuzz tests for allocation sums & profit/loss edges.
+- [x] (Optional) Fuzz tests for allocation sums & profit/loss edges.
 
 ## Milestone 7 — Frontend MVP
 - [ ] Connect wallet (Wagmi).
