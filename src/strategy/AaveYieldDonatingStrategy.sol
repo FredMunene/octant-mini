@@ -30,7 +30,10 @@ contract AaveYieldDonatingStrategy is AccessControl, ReentrancyGuard {
     event EmergencyWithdrawn(uint256 indexed amount, address indexed recipient);
 
     error InvalidAddress();
-    error NotImplemented();
+    error ZeroAmount();
+    error InsufficientPrincipal();
+    error WithdrawalFailed();
+    error InsufficientIdle();
 
     constructor(
         OctantMiniVault vault_,
@@ -40,11 +43,8 @@ contract AaveYieldDonatingStrategy is AccessControl, ReentrancyGuard {
         address admin
     ) {
         if (
-            address(vault_) == address(0) ||
-            address(asset_) == address(0) ||
-            address(aToken_) == address(0) ||
-            address(pool_) == address(0) ||
-            admin == address(0)
+            address(vault_) == address(0) || address(asset_) == address(0)
+                || address(aToken_) == address(0) || address(pool_) == address(0) || admin == address(0)
         ) revert InvalidAddress();
 
         vault = vault_;
@@ -59,21 +59,56 @@ contract AaveYieldDonatingStrategy is AccessControl, ReentrancyGuard {
     }
 
     function deployFunds(uint256 amount) external onlyRole(KEEPER_ROLE) nonReentrant {
-        amount;
-        revert NotImplemented();
+        if (amount == 0) revert ZeroAmount();
+        uint256 idle = asset.balanceOf(address(this));
+        if (amount > idle) revert InsufficientIdle();
+
+        pool.supply(address(asset), amount, address(this), 0);
+
+        principalBalance += amount;
+        emit FundsDeployed(amount);
     }
 
     function freeFunds(uint256 amount) external onlyRole(KEEPER_ROLE) nonReentrant {
-        amount;
-        revert NotImplemented();
+        if (amount == 0) revert ZeroAmount();
+        if (amount > principalBalance) revert InsufficientPrincipal();
+
+        uint256 withdrawn = pool.withdraw(address(asset), amount, address(this));
+        if (withdrawn < amount) revert WithdrawalFailed();
+
+        principalBalance -= amount;
+        asset.safeTransfer(address(vault), withdrawn);
+        emit FundsFreed(withdrawn);
     }
 
     function harvestAndReport() external onlyRole(KEEPER_ROLE) nonReentrant {
-        revert NotImplemented();
+        uint256 currentValue = aToken.balanceOf(address(this));
+
+        if (currentValue >= principalBalance) {
+            uint256 profit = currentValue - principalBalance;
+            if (profit > 0) {
+                pool.withdraw(address(asset), profit, address(this));
+                asset.safeTransfer(address(vault), profit);
+                vault.report(profit, 0);
+                emit Harvested(int256(profit));
+            }
+        } else {
+            uint256 loss = principalBalance - currentValue;
+            vault.report(0, loss);
+            principalBalance = currentValue;
+            emit Harvested(-int256(loss));
+        }
     }
 
-    function emergencyWithdraw(address recipient) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
-        recipient;
-        revert NotImplemented();
+    function emergencyWithdraw(address recipient)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        nonReentrant
+    {
+        if (recipient == address(0)) revert InvalidAddress();
+
+        uint256 withdrawn = pool.withdraw(address(asset), type(uint256).max, recipient);
+        principalBalance = 0;
+        emit EmergencyWithdrawn(withdrawn, recipient);
     }
 }
