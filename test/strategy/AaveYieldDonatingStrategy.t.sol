@@ -6,7 +6,7 @@ import "forge-std/Test.sol";
 import {AaveYieldDonatingStrategy} from "../../src/strategy/AaveYieldDonatingStrategy.sol";
 import {OctantMiniVault} from "../../src/vault/OctantMiniVault.sol";
 import {FundingRouter} from "../../src/router/FundingRouter.sol";
-import {MockERC20} from "../mocks/MockERC20.sol";
+import {MockERC20} from "../../src/mocks/MockERC20.sol";
 import {MockAToken} from "../mocks/MockAToken.sol";
 import {MockAavePool} from "../mocks/MockAavePool.sol";
 import {IAaveV3Pool} from "../../src/interfaces/IAaveV3Pool.sol";
