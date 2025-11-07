@@ -2,10 +2,11 @@
 pragma solidity ^0.8.24;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /// @title OctantMiniVault
 /// @notice ERC-4626 vault that coordinates with a donating strategy and funding router.
@@ -108,12 +109,23 @@ contract OctantMiniVault is ERC4626, AccessControl, ReentrancyGuard {
         return IERC20(asset()).balanceOf(address(this));
     }
 
-    function _afterDeposit(uint256 assets, uint256) internal override {
+    function _deposit(address caller, address receiver, uint256 assets, uint256 shares)
+        internal
+        override
+    {
+        super._deposit(caller, receiver, assets, shares);
         _managedAssets += assets;
     }
 
-    function _beforeWithdraw(uint256 assets, uint256) internal override {
+    function _withdraw(
+        address caller,
+        address receiver,
+        address owner,
+        uint256 assets,
+        uint256 shares
+    ) internal override {
         if (assets > _managedAssets) revert InsufficientManagedAssets();
         _managedAssets -= assets;
+        super._withdraw(caller, receiver, owner, assets, shares);
     }
 }
