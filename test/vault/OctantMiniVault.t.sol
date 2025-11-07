@@ -5,7 +5,7 @@ import "forge-std/Test.sol";
 
 import {OctantMiniVault} from "../../src/vault/OctantMiniVault.sol";
 import {FundingRouter} from "../../src/router/FundingRouter.sol";
-import {MockERC20} from "../mocks/MockERC20.sol";
+import {MockERC20} from "../../src/mocks/MockERC20.sol";
 import {YieldSink} from "../mocks/YieldSink.sol";
 import {MockStrategy} from "../mocks/MockStrategy.sol";
 
