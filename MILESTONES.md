@@ -6,36 +6,36 @@
 - [x] Configure tooling: Foundry (or Hardhat), linting, formatting.
 
 ## Milestone 2 — Core Contracts Scaffolding
-- [ ] Create `OctantMiniVault.sol` skeleton (ERC-4626, ownable/access control).
-- [ ] Create `FundingRouter.sol` skeleton.
-- [ ] Create `AaveYieldDonatingStrategy.sol` skeleton.
-- [ ] Define interfaces for Aave v3 Pool & aTokens.
+- [x] Create `OctantMiniVault.sol` skeleton (ERC-4626, ownable/access control).
+- [x] Create `FundingRouter.sol` skeleton.
+- [x] Create `AaveYieldDonatingStrategy.sol` skeleton.
+- [x] Define interfaces for Aave v3 Pool & aTokens.
 
 ## Milestone 3 — OctantMiniVault Implementation
-- [ ] Implement ERC-4626 logic (deposit, withdraw, totalAssets, convert).
-- [ ] Add `setStrategy`, `setFundingRouter` with access control.
-- [ ] Implement `report(profit, loss)` hook for yield-donating behavior.
-- [ ] Emit clear events (e.g. `YieldDonated`, `LossReported`, config changes).
+- [x] Implement ERC-4626 logic (deposit, withdraw, totalAssets, convert).
+- [x] Add `setStrategy`, `setFundingRouter` with access control.
+- [x] Implement `report(profit, loss)` hook for yield-donating behavior.
+- [x] Emit clear events (e.g. `YieldDonated`, `LossReported`, config changes).
 
 ## Milestone 4 — AaveYieldDonatingStrategy Implementation
-- [ ] Wire constructor with `asset`, `aToken`, `pool`, `vault`.
-- [ ] Implement `deployFunds(uint256)` → `pool.supply(...)`.
-- [ ] Implement `freeFunds(uint256)` → `pool.withdraw(...)`.
-- [ ] Track principal vs current balance.
-- [ ] Implement `harvestAndReport()` → compute `profit/loss`, call `vault.report(...)`.
-- [ ] Add optional `emergencyWithdraw()`.
+- [x] Wire constructor with `asset`, `aToken`, `pool`, `vault`.
+- [x] Implement `deployFunds(uint256)` → `pool.supply(...)`.
+- [x] Implement `freeFunds(uint256)` → `pool.withdraw(...)`.
+- [x] Track principal vs current balance.
+- [x] Implement `harvestAndReport()` → compute `profit/loss`, call `vault.report(...)`.
+- [x] Add optional `emergencyWithdraw()`.
 
 ## Milestone 5 — FundingRouter Implementation
-- [ ] Define Program struct (recipient, bps, metadataURI).
-- [ ] Implement `addProgram`, `updateProgram`, `setAllocations`.
-- [ ] Implement `route()` to split current balance by basis points.
-- [ ] Emit `FundsRouted` and config change events.
-- [ ] Enforce access control for admin-only functions.
+- [x] Define Program struct (recipient, bps, metadataURI).
+- [x] Implement `addProgram`, `updateProgram`, `setAllocations`.
+- [x] Implement `route()` to split current balance by basis points.
+- [x] Emit `FundsRouted` and config change events.
+- [x] Enforce access control for admin-only functions.
 
 ## Milestone 6 — Testing & Simulation
-- [ ] Unit tests: vault (deposits, withdrawals, access control).
-- [ ] Unit tests: strategy (deploy, free, harvest, report).
-- [ ] Unit tests: router (allocations, routing math).
+- [x] Unit tests: vault (deposits, withdrawals, access control).
+- [x] Unit tests: strategy (deploy, free, harvest, report).
+- [x] Unit tests: router (allocations, routing math).
 - [ ] Integration test: deposit → deployFunds → harvestAndReport → route().
 - [ ] (Optional) Fuzz tests for allocation sums & profit/loss edges.
 
