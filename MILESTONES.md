@@ -36,7 +36,7 @@
 - [x] Unit tests: vault (deposits, withdrawals, access control).
 - [x] Unit tests: strategy (deploy, free, harvest, report).
 - [x] Unit tests: router (allocations, routing math).
-- [ ] Integration test: deposit → deployFunds → harvestAndReport → route().
+- [x] Integration test: deposit → deployFunds → harvestAndReport → route().
 - [ ] (Optional) Fuzz tests for allocation sums & profit/loss edges.
 
 ## Milestone 7 — Frontend MVP
