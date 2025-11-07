@@ -5,6 +5,7 @@ broadcast/
 lib/*
 !lib/.gitkeep
 !lib/openzeppelin-contracts
+!lib/forge-std
 
 # Node / frontend artifacts
 node_modules/
