@@ -48,9 +48,9 @@
 - [ ] Impact dashboard: programs + amounts funded.
 
 ## Milestone 8 — Deployment & Scripts
-- [ ] Add Foundry/Hardhat scripts to deploy MockUSDC, Router, Vault, Strategy.
-- [ ] Add environment configuration for Sepolia/Base Sepolia.
-- [ ] Document deployment flow in `DEPLOYMENT.md`.
+- [x] Add Foundry/Hardhat scripts to deploy MockUSDC, Router, Vault, Strategy.
+- [x] Add environment configuration for Sepolia/Base Sepolia.
+- [x] Document deployment flow in `DEPLOYMENT.md`.
 - [ ] Record deployed addresses in `docs/deployments/<network>.md`.
 
 ## Milestone 9 — Security & Hardening
