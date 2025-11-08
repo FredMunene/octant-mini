@@ -41,6 +41,8 @@ contract DeployOctantMini is Script {
         );
         vault.setStrategy(address(strategy));
 
+        _seedPrograms(router);
+
         vm.stopBroadcast();
 
         _logDeployments(address(asset), address(router), address(vault), address(strategy));
@@ -65,5 +67,29 @@ contract DeployOctantMini is Script {
         console2.log("Router     :", router);
         console2.log("Vault      :", vault);
         console2.log("Strategy   :", strategy);
+    }
+
+    function _seedPrograms(FundingRouter router) internal {
+        uint256 count = vm.envOr("OM_PROGRAM_COUNT", uint256(0));
+        for (uint256 i = 0; i < count; i++) {
+            string memory index = vm.toString(i);
+            address recipient = vm.envAddress(
+                string.concat("OM_PROGRAM_", index, "_RECIPIENT")
+            );
+            uint16 bps = uint16(vm.envUint(string.concat("OM_PROGRAM_", index, "_BPS")));
+            string memory metadata = vm.envString(
+                string.concat("OM_PROGRAM_", index, "_URI")
+            );
+            bool active = vm.envOr(
+                string.concat("OM_PROGRAM_", index, "_ACTIVE"), true
+            );
+            FundingRouter.Program memory program = FundingRouter.Program({
+                recipient: recipient,
+                bps: bps,
+                metadataURI: metadata,
+                active: active
+            });
+            router.addProgram(program);
+        }
     }
 }
