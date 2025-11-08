@@ -59,6 +59,8 @@ All addresses are printed to stdout for record keeping.
 2. Call `deposit`.
 3. Call `forwardToStrategy` from a strategist role, then `deployFunds` on the strategy keeper.
 
+> Shortcut: use `./scripts/run-full-flow.sh` with the deployed addresses, RPC URL, and keeper key to run a full drill (mint → deposit → forward → deploy → harvest → route) on Sepolia.
+
 ### 5. Harvest & Route
 1. Keeper runs `harvestAndReport`.
 2. Router keeper calls `route()` to fan out yield.
