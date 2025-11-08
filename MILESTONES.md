@@ -1,7 +1,7 @@
 # Milestones
 
 ## Milestone 1 — Repo & Docs Scaffolding
-- [x] Initialize repo structure (`/src`, `/script`, `/test`, `/docs`, `/frontend`).
+- [x] Initialize repo structure (`/smart_contracts`, `/docs`, `/frontend`).
 - [x] Add base docs: `README.md`, `PRD.md`, `ADR.md`, `RUNBOOK.md`, `THREAT_model.md`.
 - [x] Configure tooling: Foundry (or Hardhat), linting, formatting.
 

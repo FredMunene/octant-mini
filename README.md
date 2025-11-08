@@ -5,14 +5,18 @@ Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to publ
 ## Project Layout
 
 ```
-├── docs/             # Product, architecture, runbook, and threat model refs
-├── src/              # Solidity sources (vault, strategy, router)
-├── script/           # Foundry scripts (deploy, config, tasks)
-├── test/             # Forge unit + integration suites
-├── frontend/         # React/Wagmi dashboard (to be implemented)
-├── lib/              # External solidity deps installed via forge
-├── MILESTONES.md     # High-level milestone tracker
-└── debug.md          # Running log of issues, fixes, and learnings
+├── docs/                 # Product, architecture, runbook, and threat model refs
+├── frontend/             # React/Wagmi dashboard + demo flows
+├── smart_contracts/      # Entire Foundry project (contracts + tooling)
+│   ├── src/              # Solidity sources (vault, strategy, router)
+│   ├── script/           # Foundry broadcast/config scripts
+│   ├── scripts/          # Bash helpers (run-full-flow, etc.)
+│   ├── test/             # Forge unit + integration suites
+│   ├── lib/              # External solidity deps installed via forge
+│   ├── broadcast/, cache/, out/
+│   └── foundry.toml, remappings.txt
+├── MILESTONES.md         # High-level milestone tracker
+└── debug.md              # Running log of issues, fixes, and learnings
 ```
 
 ## Tooling
@@ -32,15 +36,16 @@ Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to publ
    ```bash
    pnpm install
    ```
-4. Pull Solidity dependencies as they are added:
+4. Pull Solidity dependencies (run inside the Foundry workspace):
    ```bash
+   cd smart_contracts
    forge install
    ```
 5. Run formatters / linters to verify the toolchain:
    ```bash
    pnpm lint:sol
    pnpm lint:prettier
-   forge fmt --check
+   forge fmt --check --root smart_contracts
    ```
 
 ## Developer Workflow
@@ -49,6 +54,17 @@ Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to publ
 - Log every notable failure, mitigation, or refactor in `debug.md` using the prescribed template.
 - Keep commits small and intentional (e.g., `feat: add ERC4626 vault skeleton`, `docs: summarize threat model assumptions`).
 - Reference upstream standards whenever you rely on them (ERC-4626, Aave v3, Octant v2 docs).
+
+## Frontend Dashboard
+
+The milestone 7 landing page lives under `frontend/` and is built with React + Vite.
+
+```bash
+cd frontend
+pnpm install       # first run only
+pnpm dev           # starts Vite at http://localhost:5173
+pnpm build         # optional: production bundle
+```
 
 ## Documentation Index
 
@@ -61,8 +77,8 @@ Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to publ
 
 ## Next Steps
 
-1. Complete Milestone 1 by adding the remaining scaffolding (vault/strategy/router contracts).
-2. Flesh out Milestone 2 contract skeletons and wire Foundry tests.
+1. Complete Milestone 1 by adding the remaining scaffolding (`smart_contracts/src`, Foundry config).
+2. Flesh out Milestone 2 contract skeletons and wire Forge tests under `smart_contracts/test`.
 3. Stub the frontend MVP flows for deposits, routing, and reporting.
 
 Everything else in this repo (tests, deployment scripts, and dashboards) should build on this deterministic foundation.

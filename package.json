@@ -4,15 +4,18 @@
   "private": true,
   "scripts": {
     "lint": "pnpm lint:sol && pnpm lint:prettier",
-    "lint:sol": "solhint \"src/**/*.sol\"",
-    "lint:prettier": "prettier --check \"{docs,frontend,script,test}/**/*.{md,js,ts,tsx,json}\"",
+    "lint:sol": "solhint \"smart_contracts/src/**/*.sol\" \"smart_contracts/script/**/*.sol\" \"smart_contracts/test/**/*.sol\"",
+    "lint:prettier": "prettier --check \"{docs,frontend,smart_contracts/scripts}/**/*.{md,js,ts,tsx,json}\"",
     "format": "pnpm format:sol && pnpm format:prettier",
-    "format:sol": "forge fmt",
-    "format:prettier": "prettier --write \"{docs,frontend,script,test}/**/*.{md,js,ts,tsx,json}\""
+    "format:sol": "forge fmt --root smart_contracts",
+    "format:prettier": "prettier --write \"{docs,frontend,smart_contracts/scripts}/**/*.{md,js,ts,tsx,json}\""
   },
   "devDependencies": {
     "prettier": "^3.3.3",
     "solhint": "^4.5.4"
   },
-  "packageManager": "pnpm@9.14.4"
+  "packageManager": "pnpm@9.14.4",
+  "dependencies": {
+    "pnpm": "^10.20.0"
+  }
 }
