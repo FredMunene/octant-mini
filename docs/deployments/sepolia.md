@@ -11,6 +11,7 @@
 
 | Program | Recipient | BPS | Metadata | Active |
 |---------|-----------|-----|----------|--------|
-| `_Program 0_` | `_TBD_` | `_TBD_` | `_TBD_` | `_TBD_` |
+| Program 0 | `0x6c550478cEd0F3a3451419CEb38d59e885b2178c` | 7000 | `ipfs://program0` | true |
+| Program 1 | `0xF41886af501e2a0958dBD31D9a28AcD6c2f5db06` | 3000 | `ipfs://program1` | true |
 
 > After running `forge script ... --broadcast` on Sepolia, capture the emitted console logs and update the table above.
