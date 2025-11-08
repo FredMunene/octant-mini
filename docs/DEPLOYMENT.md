@@ -19,6 +19,16 @@ export OM_AAVE_POOL=<Aave pool address>
 export OM_ASSET=<existing ERC20, default deploys MockERC20>
 export OM_ADMIN=<protocol admin address, default signer>
 export OM_INITIAL_MINT=<uint amount minted to admin when deploying mock asset>
+# Optional router programs (repeat per index)
+export OM_PROGRAM_COUNT=2
+export OM_PROGRAM_0_RECIPIENT=0x...
+export OM_PROGRAM_0_BPS=7000
+export OM_PROGRAM_0_URI=ipfs://program0
+export OM_PROGRAM_0_ACTIVE=true
+export OM_PROGRAM_1_RECIPIENT=0x...
+export OM_PROGRAM_1_BPS=3000
+export OM_PROGRAM_1_URI=ipfs://program1
+export OM_PROGRAM_1_ACTIVE=true
 ```
 
 ### 2. Run Foundry Script
@@ -37,11 +47,12 @@ The script:
 All addresses are printed to stdout for record keeping.
 
 ### 3. Configure Router Programs
-Use `cast` or a multisig to add programs and set allocations:
-```bash
-cast send <ROUTER> "addProgram((address,uint16,string,bool))" \
-  "([<recipient>,<bps>,\"ipfs://...\",true])" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
-```
+- Preferred: populate the `OM_PROGRAM_*` env vars (see above) before running the script.
+- Alternative: use `cast` or a multisig to add programs and set allocations manually:
+  ```bash
+  cast send <ROUTER> "addProgram((address,uint16,string,bool))" \
+    "([<recipient>,<bps>,\"ipfs://...\",true])" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+  ```
 
 ### 4. Deposits / Strategy Funding
 1. Approve the vault for the asset.
