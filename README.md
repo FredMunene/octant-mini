@@ -26,15 +26,14 @@ Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to publ
 | Smart contracts | [Foundry](https://book.getfoundry.sh/) w/ `forge fmt` |
 | Solidity linting | [`solhint`](https://protofire.github.io/solhint/) |
 | Markdown/TS formatting | [`prettier`](https://prettier.io/) |
-| Package manager | `pnpm` ≥ 9 (falls back to npm if needed) |
+| Package manager | `npm` ≥ 10 |
 
 ## Getting Started
 
 1. Install Rust + Foundry: `curl -L https://foundry.paradigm.xyz | bash` then `foundryup`.
-2. Install pnpm: `npm install -g pnpm` (or use npm/yarn with equivalent scripts).
-3. Install JS tooling dependencies:
+2. Install JS tooling dependencies:
    ```bash
-   pnpm install
+   npm install
    ```
 4. Pull Solidity dependencies (run inside the Foundry workspace):
    ```bash
@@ -43,8 +42,8 @@ Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to publ
    ```
 5. Run formatters / linters to verify the toolchain:
    ```bash
-   pnpm lint:sol
-   pnpm lint:prettier
+   npm run lint:sol
+   npm run lint:prettier
    forge fmt --check --root smart_contracts
    ```
 
@@ -61,9 +60,9 @@ The milestone 7 landing page lives under `frontend/` and is built with React + V
 
 ```bash
 cd frontend
-pnpm install       # first run only
-pnpm dev           # starts Vite at http://localhost:5173
-pnpm build         # optional: production bundle
+npm install        # first run only
+npm run dev        # starts Vite at http://localhost:5173
+npm run build      # optional: production bundle
 ```
 
 Copy `.env.example` to `.env` and fill in RPC + contract addresses before running the dev server. The dashboard now includes wallet connection, live vault stats, deposit/withdraw flows, allocation sliders, and router controls wired to the Sepolia contracts.
