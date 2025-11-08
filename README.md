@@ -66,6 +66,8 @@ pnpm dev           # starts Vite at http://localhost:5173
 pnpm build         # optional: production bundle
 ```
 
+Copy `.env.example` to `.env` and fill in RPC + contract addresses before running the dev server. The dashboard now includes wallet connection, live vault stats, deposit/withdraw flows, allocation sliders, and router controls wired to the Sepolia contracts.
+
 ## Documentation Index
 
 - Product direction → `docs/PRD.md`
