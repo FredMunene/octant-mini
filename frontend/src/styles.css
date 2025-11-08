@@ -843,3 +843,12 @@ main {
     align-items: flex-start;
   }
 }
+.link {
+  color: #8fdfff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

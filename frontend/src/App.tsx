@@ -558,7 +558,19 @@ function App() {
                 onChange={(event) => setDepositAmount(event.target.value)}
                 placeholder="0.00"
               />
-              <p className="form-helper">Wallet balance: {formatCurrency(walletBalanceValue)}</p>
+              <p className="form-helper">
+                Wallet balance: {formatCurrency(walletBalanceValue)}{' '}
+                {walletBalanceValue === 0 && (
+                  <a
+                    href="https://app.aave.com/faucet/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="link"
+                  >
+                    (Get test USDC)
+                  </a>
+                )}
+              </p>
               {needsApproval && (
                 <button
                   className="btn btn-ghost"
