@@ -67,7 +67,12 @@ cast send "$VAULT" "deposit(uint256,address)" "$AMOUNT_WEI" "$HOLDER" \
     --private-key "$PK" --rpc-url "$RPC"
 
 # Determine available liquidity before forwarding
-available_hex=$(cast call "$VAULT" "availableLiquidity()(uint256)" --rpc-url "$RPC")
+available_hex=$(cast call "$VAULT" "availableLiquidity()(uint256)" --rpc-url "$RPC" 2>/dev/null || echo "0x0")
+available_hex="${available_hex//$'\n'/}"
+if [[ ! "$available_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
+    echo "Warning: unexpected availableLiquidity response ($available_hex), defaulting to 0"
+    available_hex="0x0"
+fi
 available_dec=$(cast to-dec "$available_hex")
 if [[ "$available_dec" -lt "$AMOUNT_WEI" ]]; then
     echo "Requested amount exceeds available liquidity ($available_dec), reducing forward amount."
@@ -85,7 +90,12 @@ cast send "$VAULT" "forwardToStrategy(uint256)" "$FORWARD_AMOUNT" \
     --private-key "$PK" --rpc-url "$RPC"
 
 # Deploy only what the strategy currently holds
-strategy_balance_hex=$(cast call "$ASSET" "balanceOf(address)(uint256)" "$STRATEGY" --rpc-url "$RPC")
+strategy_balance_hex=$(cast call "$ASSET" "balanceOf(address)(uint256)" "$STRATEGY" --rpc-url "$RPC" 2>/dev/null || echo "0x0")
+strategy_balance_hex="${strategy_balance_hex//$'\n'/}"
+if [[ ! "$strategy_balance_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
+    echo "Warning: unexpected strategy balance response ($strategy_balance_hex), defaulting to 0"
+    strategy_balance_hex="0x0"
+fi
 strategy_balance_dec=$(cast to-dec "$strategy_balance_hex")
 DEPLOY_AMOUNT="$strategy_balance_dec"
 if [[ "$DEPLOY_AMOUNT" == "0" ]]; then
