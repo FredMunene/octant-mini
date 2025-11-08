@@ -24,6 +24,20 @@ AMOUNT_WEI=5000000000000000000 # 5 tokens at 18 decimals
 MINT=true
 MINT_AMOUNT=10000000000000000000
 
+parse_uint() {
+    local raw="${1//$'\n'/}"
+    raw="${raw%% *}"
+    if [[ "$raw" =~ ^0x[0-9a-fA-F]+$ ]]; then
+        cast to-dec "$raw"
+        return
+    fi
+    if [[ "$raw" =~ ^[0-9]+$ ]]; then
+        echo "$raw"
+        return
+    fi
+    echo "0"
+}
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         --vault) VAULT="$2"; shift 2 ;;
@@ -67,13 +81,8 @@ cast send "$VAULT" "deposit(uint256,address)" "$AMOUNT_WEI" "$HOLDER" \
     --private-key "$PK" --rpc-url "$RPC"
 
 # Determine available liquidity before forwarding
-available_hex=$(cast call "$VAULT" "availableLiquidity()(uint256)" --rpc-url "$RPC" 2>/dev/null || echo "0x0")
-available_hex="${available_hex//$'\n'/}"
-if [[ ! "$available_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
-    echo "Warning: unexpected availableLiquidity response ($available_hex), defaulting to 0"
-    available_hex="0x0"
-fi
-available_dec=$(cast to-dec "$available_hex")
+available_raw=$(cast call "$VAULT" "availableLiquidity()(uint256)" --rpc-url "$RPC" 2>/dev/null || echo "0")
+available_dec=$(parse_uint "$available_raw")
 if [[ "$available_dec" -lt "$AMOUNT_WEI" ]]; then
     echo "Requested amount exceeds available liquidity ($available_dec), reducing forward amount."
     FORWARD_AMOUNT="$available_dec"
@@ -90,13 +99,8 @@ cast send "$VAULT" "forwardToStrategy(uint256)" "$FORWARD_AMOUNT" \
     --private-key "$PK" --rpc-url "$RPC"
 
 # Deploy only what the strategy currently holds
-strategy_balance_hex=$(cast call "$ASSET" "balanceOf(address)(uint256)" "$STRATEGY" --rpc-url "$RPC" 2>/dev/null || echo "0x0")
-strategy_balance_hex="${strategy_balance_hex//$'\n'/}"
-if [[ ! "$strategy_balance_hex" =~ ^0x[0-9a-fA-F]+$ ]]; then
-    echo "Warning: unexpected strategy balance response ($strategy_balance_hex), defaulting to 0"
-    strategy_balance_hex="0x0"
-fi
-strategy_balance_dec=$(cast to-dec "$strategy_balance_hex")
+strategy_balance_raw=$(cast call "$ASSET" "balanceOf(address)(uint256)" "$STRATEGY" --rpc-url "$RPC" 2>/dev/null || echo "0")
+strategy_balance_dec=$(parse_uint "$strategy_balance_raw")
 DEPLOY_AMOUNT="$strategy_balance_dec"
 if [[ "$DEPLOY_AMOUNT" == "0" ]]; then
     echo "Strategy holds zero balance after forwarding; aborting."
