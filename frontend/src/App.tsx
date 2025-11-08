@@ -233,13 +233,21 @@ function App() {
 
   const programs: Program[] = useMemo(() => {
     if (!programsQuery.data) return [];
-    return programsQuery.data.map((program, idx) => ({
-      id: idx,
-      recipient: (program as any).recipient ?? program[0],
-      bps: Number((program as any).bps ?? program[1] ?? 0),
-      metadataURI: (program as any).metadataURI ?? program[2] ?? '',
-      active: (program as any).active ?? program[3] ?? false,
-    }));
+    return programsQuery.data.map((program, idx) => {
+      const item = program as {
+        recipient: `0x${string}`;
+        bps: number;
+        metadataURI: string;
+        active: boolean;
+      };
+      return {
+        id: idx,
+        recipient: item.recipient,
+        bps: Number(item.bps ?? 0),
+        metadataURI: item.metadataURI ?? '',
+        active: Boolean(item.active),
+      };
+    });
   }, [programsQuery.data]);
 
   useEffect(() => {

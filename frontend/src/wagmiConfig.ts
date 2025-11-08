@@ -2,8 +2,11 @@ import { createConfig, http } from 'wagmi';
 import { injected, walletConnect } from 'wagmi/connectors';
 import { NETWORK } from './config/contracts';
 
-const defaultRpc =
-  NETWORK.rpcUrls.public?.http?.[0] ?? NETWORK.rpcUrls.default?.http?.[0];
+const rpcUrls = NETWORK.rpcUrls as {
+  public?: { http?: readonly string[] };
+  default: { http?: readonly string[] };
+};
+const defaultRpc = rpcUrls.public?.http?.[0] ?? rpcUrls.default.http?.[0];
 if (!defaultRpc && !import.meta.env.VITE_RPC_URL) {
   console.warn('No RPC URL configured for wagmi; set VITE_RPC_URL in .env');
 }
