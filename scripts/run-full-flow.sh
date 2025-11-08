@@ -1,18 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Usage:
+# Usage example (Sepolia mock deployment):
 #   ./scripts/run-full-flow.sh \
 #       --vault 0xEd74acc3a88c06E1f7b18f8800898d37bf1B217f \
 #       --router 0xFE7726C0915B14B2584A2407cF3d34496a0d223B \
 #       --strategy 0xF5DB0574FFa04f79BCbdE87d318B1cC1310acbE9 \
 #       --asset 0x42B031295A44Ca499bB118dfFA7E2f29AFE0C88F \
 #       --rpc https://sepolia.infura.io/v3/<key> \
-#       --pk 0xabc123...
+#       --pk 0xe821...bd0 \
+#       --amount 5000000000000000000 \
+#       --mint-amount 10000000000000000000
 #
-# This script mints test tokens (if using the mock asset), deposits into the vault,
-# forwards funds to the strategy, deploys them to Aave, harvests profit, and routes it.
-
+# Flags:
+#   --holder <address>     Explicit holder (defaults to signer derived from --pk)
+#   --amount <wei>         Amount to deposit/forward (default 5e18)
+#   --mint-amount <wei>    Amount to mint when using mock asset (default 1e19)
+#   --skip-mint            Skip minting (when using a real asset)
+#
+# The script mints (if enabled), approves, deposits into the vault, forwards only available
+# liquidity, deploys whatever the strategy holds, then calls harvest + route.
 AMOUNT_WEI=5000000000000000000 # 5 tokens at 18 decimals
 MINT=true
 MINT_AMOUNT=10000000000000000000
