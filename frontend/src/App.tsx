@@ -13,7 +13,8 @@ import { vaultAbi } from './abi/vault';
 import { routerAbi } from './abi/router';
 import { erc20Abi } from './abi/erc20';
 import { ConnectButton } from './components/ConnectButton';
-import { SimulationModal } from './components/SimulationModal';
+import { CreateProgramModal, ProgramDraft } from './components/CreateProgramModal';
+import { SimulationModal, ProgramProjection } from './components/SimulationModal';
 import { formatCurrency } from './lib/format';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -143,6 +144,9 @@ const programTitle = (program: Program) =>
 const programDescription = (program: Program) =>
   PROGRAM_METADATA[program.metadataURI]?.description ?? 'Active ecosystem recipient';
 
+const shortAddress = (address: string) =>
+  address.length <= 12 ? address : `${address.slice(0, 6)}...${address.slice(-4)}`;
+
 function App() {
   const renderVaultLabel = (name: string) => name.split(' ').pop() ?? '';
   const [view, setView] = useState<'landing' | 'demo'>('landing');
@@ -152,6 +156,8 @@ function App() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const [allocationDraft, setAllocationDraft] = useState<number[]>([]);
+  const [showCreateProgram, setShowCreateProgram] = useState(false);
+  const [customPrograms, setCustomPrograms] = useState<ProgramDraft[]>([]);
 
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
@@ -310,7 +316,7 @@ function App() {
       (percent, idx) => Math.round(percent * 100) === (programs[idx]?.bps ?? 0),
     );
 
-  const impactPrograms = programs
+  const impactPrograms: ProgramProjection[] = programs
     .filter((program) => program.active && program.bps > 0)
     .map((program) => {
       const percent = program.bps / 100;
@@ -324,7 +330,7 @@ function App() {
       };
     });
 
-  const simulationPrograms = (programs.length ? programs : [
+  const simulationPrograms: ProgramProjection[] = (programs.length ? programs : [
     { id: 0, recipient: ZERO_ADDRESS, bps: 5000, metadataURI: 'ipfs://program0', active: true },
     { id: 1, recipient: ZERO_ADDRESS, bps: 5000, metadataURI: 'ipfs://program1', active: true },
   ]).map((program) => ({
@@ -334,6 +340,23 @@ function App() {
     amount: projectedMonthlyYield * (program.bps / 10_000),
     description: programDescription(program),
   }));
+
+  const customProgramCards: ProgramProjection[] = useMemo(
+    () =>
+      customPrograms.map((program) => ({
+        id: program.id,
+        title: program.name,
+        percent: program.allocation,
+        amount: projectedMonthlyYield * (program.allocation / 100),
+        description: program.description || `${program.category} program draft`,
+        wallets: program.wallets.map(({ address, percent }) => ({ address, percent })),
+        category: program.category,
+        isCustom: true,
+      })),
+    [customPrograms, projectedMonthlyYield],
+  );
+
+  const reviewPrograms = (impactPrograms.length ? impactPrograms : simulationPrograms).concat(customProgramCards);
 
   const allocationDisplay = programs.length
     ? programs.map((program) => ({
@@ -446,6 +469,11 @@ function App() {
         args: [],
       }),
     );
+  };
+
+  const handleProgramSaved = (program: ProgramDraft) => {
+    setCustomPrograms((prev) => [...prev, program]);
+    setFeedback('Program draft saved. Configure the router on-chain to activate it.');
   };
 
   const goToLanding = () => {
@@ -678,15 +706,29 @@ function App() {
                   <p className="section-label">Yield Routing Review</p>
                   <h3>Active Programs</h3>
                 </div>
+                <button className="btn btn-ghost add-program" onClick={() => setShowCreateProgram(true)}>
+                  + Add Program
+                </button>
               </header>
               <ul>
-                {(impactPrograms.length ? impactPrograms : simulationPrograms).map((program) => (
+                {reviewPrograms.map((program) => (
                   <li key={program.id}>
                     <div className="program-row">
                       <strong>{program.title}</strong>
                       <span>{program.percent.toFixed(1)}%</span>
                     </div>
+                    {program.isCustom && program.category && (
+                      <p className="program-category">{program.category}</p>
+                    )}
                     <p>{program.description}</p>
+                    {program.wallets && (
+                      <p className="wallet-breakdown">
+                        Wallets:{' '}
+                        {program.wallets
+                          .map((wallet) => `${shortAddress(wallet.address)} (${wallet.percent.toFixed(1)}%)`)
+                          .join(', ')}
+                      </p>
+                    )}
                     <p className="program-amount">{formatCurrency(program.amount ?? 0)}</p>
                   </li>
                 ))}
@@ -707,6 +749,13 @@ function App() {
             totalRouted={routerBalanceValue}
             programs={simulationPrograms}
             onClose={() => setShowSimulation(false)}
+          />
+        )}
+        {showCreateProgram && (
+          <CreateProgramModal
+            projectedYield={projectedMonthlyYield}
+            onClose={() => setShowCreateProgram(false)}
+            onSave={handleProgramSaved}
           />
         )}
       </div>
