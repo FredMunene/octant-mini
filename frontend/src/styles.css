@@ -820,6 +820,131 @@ main {
   gap: 16px;
 }
 
+.program-modal {
+  width: min(640px, 100%);
+}
+
+.program-form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.program-form label {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(203, 211, 250, 0.8);
+}
+
+.program-form input,
+.program-form textarea,
+.program-form select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(129, 143, 194, 0.4);
+  background: rgba(3, 6, 14, 0.6);
+  color: #fff;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+
+.program-form textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.program-form select {
+  appearance: none;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.wallet-splits {
+  border-top: 1px solid rgba(109, 121, 185, 0.3);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wallet-splits__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wallet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wallet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.icon-button.remove {
+  border: 1px solid rgba(255, 122, 122, 0.4);
+  color: #ff8a8a;
+  background: transparent;
+  height: 42px;
+  width: 42px;
+  border-radius: 12px;
+}
+
+.icon-button.remove:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.split-total {
+  font-size: 0.85rem;
+  color: rgba(203, 211, 250, 0.8);
+}
+
+.split-total.error {
+  color: #ff8a8a;
+}
+
+.error-text {
+  color: #ff8a8a;
+  font-size: 0.8rem;
+  margin: 4px 0 0;
+}
+
+.monthly-preview {
+  border-top: 1px solid rgba(109, 121, 185, 0.3);
+  padding-top: 12px;
+}
+
+.preview-value {
+  margin: 4px 0 6px;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.wallet-breakdown {
+  margin: 4px 0;
+  font-size: 0.85rem;
+  color: rgba(191, 202, 230, 0.85);
+}
+
+.program-category {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: rgba(159, 206, 255, 0.9);
+}
+
 @media (max-width: 720px) {
   .demo-panel {
     padding: 28px;
