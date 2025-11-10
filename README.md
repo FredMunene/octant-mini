@@ -1,85 +1,128 @@
-# Octant Mini
+# 🌀 Octant Mini
+**Earn yield. Fund your ecosystem.**
 
-Octant Mini is an ERC-4626-based donating vault that pipes Aave v3 yield to public goods through an on-chain FundingRouter. This repository contains the contracts, docs, and future frontend that make the system reproducible for hackathons or lean treasuries.
+---
 
-## Project Layout
+## 🌱 Story
 
-```
-├── docs/                 # Product, architecture, runbook, and threat model refs
-├── frontend/             # React/Wagmi dashboard + demo flows
-├── smart_contracts/      # Entire Foundry project (contracts + tooling)
-│   ├── src/              # Solidity sources (vault, strategy, router)
-│   ├── script/           # Foundry broadcast/config scripts
-│   ├── scripts/          # Bash helpers (run-full-flow, etc.)
-│   ├── test/             # Forge unit + integration suites
-│   ├── lib/              # External solidity deps installed via forge
-│   ├── broadcast/, cache/, out/
-│   └── foundry.toml, remappings.txt
-├── MILESTONES.md         # High-level milestone tracker
-└── debug.md              # Running log of issues, fixes, and learnings
-```
+In 2024‑2025, even major DAOs showed how fragile governance and treasury management can be.
 
-## Tooling
+- **Jupiter DAO** (Solana DEX aggregator) paused all governance votes until 2026, citing a “breakdown in trust” in its processes.
+- **Scroll DAO** (Ethereum Layer‑2 protocol) stopped governance after multiple leadership resignations, leaving key treasury and funding proposals in limbo.
 
-| Concern | Tooling |
-|---------|---------|
-| Smart contracts | [Foundry](https://book.getfoundry.sh/) w/ `forge fmt` |
-| Solidity linting | [`solhint`](https://protofire.github.io/solhint/) |
-| Markdown/TS formatting | [`prettier`](https://prettier.io/) |
-| Package manager | `npm` ≥ 10 |
+These stories aren’t just headlines — they reveal a bigger problem: **DAOs and communities struggle to turn treasury capital into impact when governance stalls or becomes too complex**.
 
-## Getting Started
+That’s where **Octant Mini** comes in. It’s a simple, plug-and-play tool that helps communities generate yield from idle funds and route it to grants, builders, and ecosystem projects automatically, **without touching the principal** and **without requiring endless votes**.
 
-1. Install Rust + Foundry: `curl -L https://foundry.paradigm.xyz | bash` then `foundryup`.
-2. Install JS tooling dependencies:
-   ```bash
-   npm install
-   ```
-4. Pull Solidity dependencies (run inside the Foundry workspace):
-   ```bash
-   cd smart_contracts
-   forge install
-   ```
-5. Run formatters / linters to verify the toolchain:
-   ```bash
-   npm run lint:sol
-   npm run lint:prettier
-   forge fmt --check --root smart_contracts
-   ```
+---
 
-## Developer Workflow
+## 🧠 Problem
 
-- Track high-level progress in `MILESTONES.md` and check boxes as milestones close.
-- Log every notable failure, mitigation, or refactor in `debug.md` using the prescribed template.
-- Keep commits small and intentional (e.g., `feat: add ERC4626 vault skeleton`, `docs: summarize threat model assumptions`).
-- Reference upstream standards whenever you rely on them (ERC-4626, Aave v3, Octant v2 docs).
+Small DAOs and ecosystem treasuries face a familiar set of challenges:
 
-## Frontend Dashboard
+- Idle funds sit in the treasury without doing any work.
+- Governance processes are slow, messy, or stalled entirely.
+- Lack of transparency leaves contributors unsure about where money is going.
 
-The milestone 7 landing page lives under `frontend/` and is built with React + Vite.
+Even big projects like Jupiter and Scroll show how risky manual treasury management can be. **Octant Mini addresses this by making funds productive, allocations transparent, and funding automatic**, so communities can focus on growth instead of spreadsheets.
 
+---
+
+## 💡 What Octant Mini Does
+
+Octant Mini turns your treasury into an **automated funding engine**. The MVP focuses on simplicity:
+
+1. **Deposit:** Treasury assets go into a secure ERC-4626 vault.
+2. **Generate:** The vault earns yield through diversified strategies (~5% APY in MVP).
+3. **Route:** The yield flows to community projects, grants, or builders.
+
+**Extra perks for small communities:**
+
+- Simulate payouts before committing funds
+- Track allocations with a clean, visual dashboard
+- No code, no complicated contracts — plug and play
+
+**Octant Mini is your treasury autopilot**, letting DAOs grow their ecosystem even when governance is slow.
+
+---
+
+## 🎥 Demo
+
+Check out a short demo video showing how deposits, yield generation, and allocation routing work:  
+[Watch Demo](https://youtu.be/n09t7tFkUeg)
+
+---
+
+###  Faucets
+
+For hackathon testing, you can claim test funds (ETH or Aave assets) here:  
+
+- [Aave Usdc Testnet Faucet](https://app.aave.com/faucet)  
+
+These funds allow you to try deposits, simulate yield, and test routing without using real assets.
+
+
+## 🗺 Roadmap
+
+**Q4 2025**
+
+- MVP launch (Vault, Routing, Simulation)
+- Public GitHub release
+- Feedback loop from early DAOs
+
+**Q1 2026**
+
+- Integrate more yield strategies (Lido, Aave, Pendle)
+- Add role-based access for DAO treasurers
+- Introduce a “Community Goals” module
+
+**Q2 2026**
+
+- Expand simulation tools (historical yield projection)
+- Add governance layer for yield allocation votes
+- UI/UX redesign for mobile DAOs
+
+**Q3 2026**
+
+- Launch analytics and reporting API
+- Support multi-chain vaults (Solana, Base, Polygon)
+
+**Q4 2026**
+
+- Public beta with ecosystem partners
+- Full open-source documentation
+- DAO onboarding program
+
+---
+
+## ⚙ How to Use
+
+You can either try **the live demo** or run it locally:
+
+### Live Demo
+[Visit Octant Mini live](https://octant-mini-two.vercel.app/)
+
+### Local Setup (for developers / hackathon judges)
 ```bash
-cd frontend
-npm install        # first run only
-npm run dev        # starts Vite at http://localhost:5173
-npm run build      # optional: production bundle
+git clone https://github.com/your-repo/octant-mini.git
+cd octant-mini
+npm install
+npm start
 ```
+- Open your browser at http://localhost:3000 and explore the dashboard. It shows:
 
-Copy `.env.example` to `.env` and fill in RPC + contract addresses before running the dev server. The dashboard now includes wallet connection, live vault stats, deposit/withdraw flows, allocation sliders, and router controls wired to the Sepolia contracts.
+- Total deposited funds
 
-## Documentation Index
+- Live yield (~5% APY MVP)
 
-- Product direction → `docs/PRD.md`
-- Architecture decisions → `docs/ADR.md`
-- Operations & runbooks → `docs/RUNBOOK.md`
-- Threat modeling → `docs/THREAT_model.md`
-- Deployment steps → `docs/DEPLOYMENT.md`
-- Daily status / scratchpad → `docs/track.md`
+- Distribution flow to grants, builders, or other projects
 
-## Next Steps
+# 📌 License
 
-1. Complete Milestone 1 by adding the remaining scaffolding (`smart_contracts/src`, Foundry config).
-2. Flesh out Milestone 2 contract skeletons and wire Forge tests under `smart_contracts/test`.
-3. Stub the frontend MVP flows for deposits, routing, and reporting.
+- MIT License — free to use, fork, and build on.
 
-Everything else in this repo (tests, deployment scripts, and dashboards) should build on this deterministic foundation.
+# ❤️ Why It Matters
+
+Octant Mini started as a hackathon MVP, but it’s built for every DAO or community that wants to make their funds work automatically. Even small treasuries can generate real impact without waiting for perfect governance or endless votes.
+
+With Octant Mini, DAOs stop watching their funds sit idle and start turning capital into growth, builders, and community magic.
