@@ -1,11 +1,14 @@
 import { formatCurrency } from '../lib/format';
 
-type ProgramProjection = {
-  id: number;
+export type ProgramProjection = {
+  id: number | string;
   title: string;
   percent: number;
   amount: number;
   description: string;
+  wallets?: { address: string; percent: number }[];
+  category?: string;
+  isCustom?: boolean;
 };
 
 interface SimulationModalProps {
